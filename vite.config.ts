@@ -8,6 +8,9 @@ export default defineConfig({
     federation({
       name: 'todoList',
       filename: 'remoteEntry.js',
+      remotes: {
+        remoteApp: "http://localhost:8080/assets/remoteEntry.js"
+      },
       exposes: {
         './TodoList': './src/TodoList',
       },

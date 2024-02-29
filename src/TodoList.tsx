@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
+//@ts-ignore
+import EventBus from 'remoteApp/EventBus';
+import './TodoList.css'; // Import the CSS file for styling
 
 interface Todo {
   id: number;
@@ -28,30 +31,37 @@ const TodoList: React.FC = () => {
   };
 
   const handleToggleTodo = (id: number) => {
+    let toDoItem = todos[0];
     const updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
-        return { ...todo, completed: !todo.completed };
+        toDoItem = todo;
+        return { ...todo, completed: true };
       }
       return todo;
     });
+    EventBus.emit('taskName', toDoItem?.text);
+
     setTodos(updatedTodos);
   };
 
   const handleDeleteTodo = (id: number) => {
     const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
+    EventBus.emit('deleteToDo');
   };
 
   return (
-    <div>
+    <div className="todo-list-container">
       <h2>Todo List</h2>
-      <input
-        type="text"
-        value={newTodo}
-        onChange={handleInputChange}
-        placeholder="Enter a new todo"
-      />
-      <button onClick={handleAddTodo}>Add Todo</button>
+      <div className="input-container">
+        <input
+          type="text"
+          value={newTodo}
+          onChange={handleInputChange}
+          placeholder="Enter a new todo"
+        />
+        <button onClick={handleAddTodo}>Add Todo</button>
+      </div>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
@@ -61,9 +71,7 @@ const TodoList: React.FC = () => {
               onChange={() => handleToggleTodo(todo.id)}
             />
             <span
-              style={{
-                textDecoration: todo.completed ? 'line-through' : 'none',
-              }}
+              className={todo.completed ? 'completed' : ''}
             >
               {todo.text}
             </span>
