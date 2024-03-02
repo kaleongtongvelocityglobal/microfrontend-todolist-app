@@ -1,6 +1,9 @@
 import React, { lazy, useState } from 'react';
 //@ts-ignore
 import EventBus from 'remoteApp/EventBus';
+//@ts-ignore
+import { userProfileStore } from 'remoteApp/UserProfileStore';
+
 import './TodoList.css'; // Import the CSS file for styling
 
 interface Todo {
@@ -12,7 +15,8 @@ interface Todo {
 const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState<string>('');
-
+  const { currentUser } = userProfileStore();
+  
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo(event.target.value);
   };
@@ -49,9 +53,9 @@ const TodoList: React.FC = () => {
     setTodos(updatedTodos);
     EventBus.emit('deleteToDo');
   };
-
   return (
     <div className="todo-list-container">
+      <h2>Welcome, {currentUser}</h2>
       <h2>Todo List</h2>
       <div className="input-container">
         <input
