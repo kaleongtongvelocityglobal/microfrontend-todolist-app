@@ -1,8 +1,8 @@
 import React, { lazy, useState } from 'react';
 //@ts-ignore
-import EventBus from 'remoteApp/EventBus';
+import { useAtom } from 'remoteApp/UserProfile';
 //@ts-ignore
-import { userProfileStore } from 'remoteApp/UserProfileStore';
+import { useAtom as useToDoListAtom } from 'remoteApp/ToDoList';
 
 import './TodoList.css'; // Import the CSS file for styling
 
@@ -13,9 +13,9 @@ interface Todo {
 }
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState<string>('');
-  const { currentUser } = userProfileStore();
+  const [username] = useAtom("name")
+  const [atomList, setAtomList] = useToDoListAtom("todolist");
   
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo(event.target.value);
@@ -23,39 +23,36 @@ const TodoList: React.FC = () => {
 
   const handleAddTodo = () => {
     if (newTodo.trim() !== '') {
-      const newId = todos.length > 0 ? todos[todos.length - 1].id + 1 : 1;
+      const newId = atomList.length > 0 ? atomList[atomList.length - 1].id + 1 : 1;
       const newTodoItem: Todo = {
         id: newId,
         text: newTodo,
         completed: false,
       };
-      setTodos([...todos, newTodoItem]);
+      setAtomList([...atomList, newTodoItem]);
       setNewTodo('');
     }
   };
 
   const handleToggleTodo = (id: number) => {
-    let toDoItem = todos[0];
-    const updatedTodos = todos.map((todo) => {
+    const updatedTodos = atomList.map((todo) => {
       if (todo.id === id) {
-        toDoItem = todo;
         return { ...todo, completed: true };
       }
       return todo;
     });
-    EventBus.emit('taskName', toDoItem?.text);
 
-    setTodos(updatedTodos);
+    setAtomList(updatedTodos);
   };
 
   const handleDeleteTodo = (id: number) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
-    EventBus.emit('deleteToDo');
+    const updatedTodos = atomList.filter((todo) => todo.id !== id);
+    setAtomList(updatedTodos);
   };
+
   return (
     <div className="todo-list-container">
-      <h2>Welcome, {currentUser}</h2>
+      <h2>Welcome, {username}</h2>
       <h2>Todo List</h2>
       <div className="input-container">
         <input
@@ -67,7 +64,7 @@ const TodoList: React.FC = () => {
         <button onClick={handleAddTodo}>Add Todo</button>
       </div>
       <ul>
-        {todos.map((todo) => (
+        {atomList?.map((todo) => (
           <li key={todo.id}>
             <input
               type="checkbox"
