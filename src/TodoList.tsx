@@ -1,4 +1,4 @@
-import React, { lazy, useState } from 'react';
+import React, { useState } from 'react';
 //@ts-ignore
 import { useAtom } from 'remoteApp/UserProfile';
 //@ts-ignore
@@ -16,6 +16,7 @@ const TodoList: React.FC = () => {
   const [newTodo, setNewTodo] = useState<string>('');
   const [username] = useAtom("name")
   const [atomList, setAtomList] = useToDoListAtom("todolist");
+
   
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo(event.target.value);

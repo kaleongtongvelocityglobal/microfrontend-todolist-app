@@ -13,6 +13,8 @@ export default defineConfig({
       },
       exposes: {
         './TodoList': './src/TodoList',
+        './RemoteAppDirectory': './src/RemoteAppDirectory',
+        './App': './src/App.tsx'
       },
       shared: ['react', 'react-dom']
     }),

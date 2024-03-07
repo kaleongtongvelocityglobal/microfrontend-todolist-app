@@ -1,7 +1,17 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import RemoteAppDirectory from './RemoteAppDirectory';
+import TodoList from './ToDoList';
 
 const App = () => {
-  return <h1>Hello, Vite React TypeScript App!</h1>;
+  return (
+    <Router basename="/app">
+      <Routes>
+        <Route path="/RemoteAppDirectory" element={<RemoteAppDirectory />} />
+        <Route path="/TodoList" element={<TodoList />} />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;
